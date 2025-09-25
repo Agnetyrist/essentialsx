@@ -9,12 +9,18 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Map;
 
 public class StorageManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static final Path CONFIG_DIR = FMLPaths.CONFIGDIR.get().resolve("essentialsx");
+    private static final Path CONFIG_DIR = Paths.get("config/essentialsx");
+
+    public static Path getConfigDir() {
+        return CONFIG_DIR;
+    }
+
 
     public static Path warpsFile() {
         return CONFIG_DIR.resolve("warps.json");

@@ -2,6 +2,7 @@ package agnes.ua.essentialsx;
 
 import agnes.ua.essentialsx.Commands.home.DelHomeCommand;
 import agnes.ua.essentialsx.Commands.home.HomeCommand;
+import agnes.ua.essentialsx.Config.EssentialsConfig;
 import agnes.ua.essentialsx.Commands.home.SetHomeCommand;
 import agnes.ua.essentialsx.Commands.warp.DelWarpCommand;
 import agnes.ua.essentialsx.Commands.warp.SetWarpCommand;
@@ -13,6 +14,7 @@ import agnes.ua.essentialsx.Commands.misc.BackCommand;
 import agnes.ua.essentialsx.Commands.misc.FlyCommand;
 import agnes.ua.essentialsx.Commands.misc.TpaCommand;
 import agnes.ua.essentialsx.Commands.misc.MsgCommand;
+import agnes.ua.essentialsx.Core.LuckPermsIntegration;
 import agnes.ua.essentialsx.Core.PermissionUtil;
 import agnes.ua.essentialsx.events.PlayerEvents;
 import net.minecraft.commands.Commands;
@@ -36,34 +38,45 @@ public class EssentialsX {
         MinecraftForge.EVENT_BUS.register(new PlayerEvents());
 
         PermissionUtil.init();
+        EssentialsConfig.loadConfig();
 
         LOGGER.info("EssentialsX загружен!");
+
+        if (LuckPermsIntegration.isLuckPermsLoaded()) {
+            System.out.println("[EssentialsX] LuckPerms найден, интеграция активирована.");
+        }
+
     }
 
     @net.minecraftforge.eventbus.api.SubscribeEvent
     public void onCommandRegister(RegisterCommandsEvent event) {
         LOGGER.info("Регистрация команд EssentialsX...");
 
-        // Home команды
-        SetHomeCommand.register(event.getDispatcher());
-        HomeCommand.register(event.getDispatcher());
-        DelHomeCommand.register(event.getDispatcher());
+        if (EssentialsConfig.data.enableHomes) {
+            SetHomeCommand.register(event.getDispatcher());
+            HomeCommand.register(event.getDispatcher());
+            DelHomeCommand.register(event.getDispatcher());
+        }
 
-        // Warp команды
-        SetWarpCommand.register(event.getDispatcher());
-        WarpCommand.register(event.getDispatcher());
-        DelWarpCommand.register(event.getDispatcher());
-        WarpsListCommand.register(event.getDispatcher());
+        if (EssentialsConfig.data.enableWarps) {
+            SetWarpCommand.register(event.getDispatcher());
+            WarpCommand.register(event.getDispatcher());
+            DelWarpCommand.register(event.getDispatcher());
+            WarpsListCommand.register(event.getDispatcher());
+        }
 
-        // Spawn команды
-        SetSpawnCommand.register(event.getDispatcher());
-        SpawnCommand.register(event.getDispatcher());
+        if (EssentialsConfig.data.enableSpawn) {
+            SetSpawnCommand.register(event.getDispatcher());
+            SpawnCommand.register(event.getDispatcher());
+        }
 
-        // Misc команды
-        BackCommand.register(event.getDispatcher());
-        FlyCommand.register(event.getDispatcher());
-        TpaCommand.register(event.getDispatcher());
-        MsgCommand.register(event.getDispatcher());
+        if (EssentialsConfig.data.enableMisc) {
+            BackCommand.register(event.getDispatcher());
+            FlyCommand.register(event.getDispatcher());
+            TpaCommand.register(event.getDispatcher());
+            MsgCommand.register(event.getDispatcher());
+        }
+
 
         LOGGER.info("Все команды EssentialsX зарегистрированы!");
     }

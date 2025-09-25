@@ -5,11 +5,13 @@ import agnes.ua.essentialsx.Storage.WarpsStorage;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 
 public class WarpCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -30,7 +32,7 @@ public class WarpCommand {
                                 return 0;
                             }
                             var warp = warpOpt.get();
-                            ResourceKey<ServerLevel> key = ResourceKey.create(ServerLevel.RESOURCE_KEY, new ResourceLocation(warp.dimension));
+                            ResourceKey<Level> key = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(warp.dimension));
                             ServerLevel level = player.getServer().getLevel(key);
                             if (level == null) {
                                 src.sendFailure(Component.literal("Мир варпа не найден: " + warp.dimension));

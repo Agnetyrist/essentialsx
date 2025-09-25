@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import static agnes.ua.essentialsx.Core.StorageManager.saveFile;
+
 public class HomesStorage {
     private static final Map<UUID, Map<String, HomeEntry>> homes = new HashMap<>();
 
@@ -17,7 +19,7 @@ public class HomesStorage {
     }
 
     public static void saveAllHomes() {
-        StorageManager.saveFile(StorageManager.warpsFile(), homes);
+        saveFile(StorageManager.warpsFile(), homes);
     }
 
     public static void setHome(UUID playerUUID, String name, double x, double y, double z, float yaw, float pitch, String dimension) {

@@ -6,11 +6,13 @@ import agnes.ua.essentialsx.events.PlayerEvents.PositionRecord;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 
 public class BackCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -28,7 +30,7 @@ public class BackCommand {
                         src.sendFailure(Component.literal("Нет последнего места смерти."));
                         return 0;
                     }
-                    ResourceKey<ServerLevel> key = ResourceKey.create(ServerLevel.RESOURCE_KEY, new ResourceLocation(record.dimension));
+                    ResourceKey<Level> key = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(record.dimension));
                     ServerLevel level = player.getServer().getLevel(key);
                     if (level == null) {
                         src.sendFailure(Component.literal("Мир последнего места смерти не найден."));
