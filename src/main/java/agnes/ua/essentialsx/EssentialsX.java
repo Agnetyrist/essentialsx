@@ -1,7 +1,9 @@
 package agnes.ua.essentialsx;
 
+import agnes.ua.essentialsx.Commands.Moderation.*;
 import agnes.ua.essentialsx.Commands.home.DelHomeCommand;
 import agnes.ua.essentialsx.Commands.home.HomeCommand;
+import agnes.ua.essentialsx.Commands.misc.*;
 import agnes.ua.essentialsx.Config.EssentialsConfig;
 import agnes.ua.essentialsx.Commands.home.SetHomeCommand;
 import agnes.ua.essentialsx.Commands.warp.DelWarpCommand;
@@ -10,12 +12,10 @@ import agnes.ua.essentialsx.Commands.warp.WarpCommand;
 import agnes.ua.essentialsx.Commands.warp.WarpsListCommand;
 import agnes.ua.essentialsx.Commands.spawn.SetSpawnCommand;
 import agnes.ua.essentialsx.Commands.spawn.SpawnCommand;
-import agnes.ua.essentialsx.Commands.misc.BackCommand;
-import agnes.ua.essentialsx.Commands.misc.FlyCommand;
-import agnes.ua.essentialsx.Commands.misc.TpaCommand;
-import agnes.ua.essentialsx.Commands.misc.MsgCommand;
 import agnes.ua.essentialsx.Core.LuckPermsIntegration;
 import agnes.ua.essentialsx.Core.PermissionUtil;
+import agnes.ua.essentialsx.Listeners.MuteListener;
+import agnes.ua.essentialsx.Listeners.PlayerJoinListener;
 import agnes.ua.essentialsx.events.PlayerEvents;
 import net.minecraft.commands.Commands;
 import net.minecraftforge.common.MinecraftForge;
@@ -32,12 +32,16 @@ public class EssentialsX {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public EssentialsX() {
+        PermissionUtil.init();
+
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
+        MinecraftForge.EVENT_BUS.register(new PlayerJoinListener());
+        MinecraftForge.EVENT_BUS.register(new MuteListener());
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new PlayerEvents());
 
-        PermissionUtil.init();
+
         EssentialsConfig.loadConfig();
 
         LOGGER.info("EssentialsX загружен!");
@@ -73,11 +77,27 @@ public class EssentialsX {
         if (EssentialsConfig.data.enableMisc) {
             BackCommand.register(event.getDispatcher());
             FlyCommand.register(event.getDispatcher());
+            ShowMenuCommand.register(event.getDispatcher());
             TpaCommand.register(event.getDispatcher());
             MsgCommand.register(event.getDispatcher());
+            TpAcceptCommand.register(event.getDispatcher());
+            TpDenyCommand.register(event.getDispatcher());
+        }
+
+        if (EssentialsConfig.data.enableModeration) {
+            KickCommand.register(event.getDispatcher());
+            BanCommand.register(event.getDispatcher());
+            UnbanCommand.register(event.getDispatcher());
+            MuteCommand.register(event.getDispatcher());
+            JailCommand.register(event.getDispatcher());
         }
 
 
-        LOGGER.info("Все команды EssentialsX зарегистрированы!");
+
+        if (EssentialsConfig.data.enableHelp) {
+            HelpCommand.register(event.getDispatcher());
+        }
+
+            LOGGER.info("Все команды EssentialsX зарегистрированы!");
     }
 }

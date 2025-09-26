@@ -1,0 +1,21 @@
+{
+  "enableHomes": true,
+  "enableWarps": true,
+  "enableSpawn": true,
+  "enableMisc": true,
+  "permissions": {
+    "essentials.warp.set": "essentials.warp.set",
+    "essentials.warp.del": "essentials.warp.del",
+    "essentials.fly": "essentials.fly",
+    "essentials.home.use": "essentials.home.use",
+    "essentials.home.del": "essentials.home.del",
+    "essentials.warp.use": "essentials.warp.use",
+    "essentials.setspawn": "essentials.setspawn",
+    "essentials.warp.list": "essentials.warp.list",
+    "essentials.home.set": "essentials.home.set",
+    "essentials.spawn": "essentials.spawn",
+    "essentials.back": "essentials.back",
+    "essentials.msg": "essentials.msg",
+    "essentials.tpa": "essentials.tpa"
+  }
+}

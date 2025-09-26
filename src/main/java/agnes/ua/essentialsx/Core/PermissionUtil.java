@@ -7,6 +7,8 @@ import net.luckperms.api.query.QueryOptions;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.chat.Component;
 
+import java.util.concurrent.CompletableFuture;
+
 public class PermissionUtil {
     private static LuckPerms luckPerms;
 
@@ -19,12 +21,29 @@ public class PermissionUtil {
     }
 
     public static boolean hasPermission(ServerPlayer player, String permission) {
+        // Если LP нет — fallback по OP уровню
         if (luckPerms == null) {
-            // fallback — OP права
             return player.hasPermissions(2);
         }
-        User user = luckPerms.getPlayerAdapter(ServerPlayer.class).getUser(player);
-        return user.getCachedData().getPermissionData(QueryOptions.defaultContextualOptions()).checkPermission(permission).asBoolean();
+
+        // Пробуем достать юзера из кэша
+        User user = luckPerms.getUserManager().getUser(player.getUUID());
+        if (user != null) {
+            return user.getCachedData()
+                    .getPermissionData(QueryOptions.defaultContextualOptions())
+                    .checkPermission(permission)
+                    .asBoolean();
+        }
+
+        // Если в кэше нет — подгружаем асинхронно (права будут доступны чуть позже)
+        CompletableFuture<User> futureUser = luckPerms.getUserManager().loadUser(player.getUUID());
+        futureUser.thenAcceptAsync(u -> {
+            // Сообщение можно закомментить, если мешает
+            player.sendSystemMessage(Component.literal("§eВаши права были подгружены, попробуйте ещё раз."));
+        });
+
+        // Пока прав нет — fallback
+        return player.hasPermissions(2);
     }
 
     public static boolean checkOrDeny(ServerPlayer player, String permission) {
